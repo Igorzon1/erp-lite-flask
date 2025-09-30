@@ -1,0 +1,45 @@
+@startuml
+!pragma layout smetana
+
+node "Client (Browser)" as Browser {
+  component "UI (Bootstrap + JS)" as UI
+}
+
+node "API Server" as API {
+  component "Flask App" as Flask
+  component "Routes / Controllers" as Routes
+  component "Services (business logic)" as Services
+  component "Repositories (DB access)" as Repos
+}
+
+node "Data" {
+  database "PostgreSQL" as DB
+}
+
+node "Workers" as WorkerNode {
+  component "Celery Workers" as CeleryW
+  queue "RabbitMQ" as MQ
+}
+
+node "External" {
+  component "Payment Gateway" as Payment
+}
+
+Browser --> Routes : HTTP (JSON)
+Routes --> Services : call
+Services --> Repos : queries
+Repos --> DB : SQL
+Services --> MQ : enqueue tasks
+MQ --> CeleryW : process async jobs
+CeleryW --> DB : read/write
+Routes --> Payment : REST for payments
+
+package "Deployment" {
+  component "Docker Compose" as Docker
+  Docker ..> API
+  Docker ..> DB
+  Docker ..> MQ
+  Docker ..> WorkerNode
+}
+
+@enduml

@@ -1,0 +1,116 @@
+@startuml
+' layout e estética
+skinparam classAttributeIconSize 0
+left to right direction
+
+' Pacote: Clientes
+package "Clientes" {
+  class Client {
+    +id: UUID
+    +name: string
+    +cpf_cnpj: string
+    +email: string
+    +phone: string
+    +address: string
+  }
+
+  class Address {
+    +id: UUID
+    +client_id: UUID
+    +street: string
+    +city: string
+    +state: string
+    +zip: string
+    +country: string
+  }
+}
+
+' Pacote: Produtos / Estoque
+package "Produtos & Estoque" {
+  class Product {
+    +id: UUID
+    +sku: string
+    +name: string
+    +description: string
+    +weight: float
+    +dimensions: string
+    +class_abc: char
+    +perishable: bool
+  }
+
+  class StockLocation {
+    +id: UUID
+    +zone: string        ' ex: A01
+    +aisle: string       ' ex: C03
+    +shelf: string       ' ex: E02
+    +level: string       ' ex: N04
+    +position: string    ' ex: P05
+    +capacity_weight: float
+    +capacity_volume: float
+    +location_code: string  ' A01-C03-E02-N04-P05 (derived)
+  }
+
+  class InventoryBatch {
+    +id: UUID
+    +product_id: UUID
+    +lot: string
+    +expiry_date: date
+    +quantity: int
+    +stock_location_id: UUID
+  }
+
+  class InventoryMovement {
+    +id: UUID
+    +batch_id: UUID
+    +type: string   ' entrada/saida/reserva
+    +quantity: int
+    +document_id: UUID
+    +created_at: datetime
+  }
+}
+
+' Pacote: Pedidos
+package "Pedidos" {
+  class Order {
+    +id: UUID
+    +client_id: UUID
+    +status: string
+    +total: decimal
+    +created_at: datetime
+  }
+
+  class OrderItem {
+    +id: UUID
+    +order_id: UUID
+    +product_id: UUID
+    +quantity: int
+    +unit_price: decimal
+    +batch_allocated: UUID
+  }
+}
+
+' Relacionamentos e multiplicidades (legíveis)
+Client "1" --> "*" Order : places >
+Order "1" --> "*" OrderItem : contains >
+Product "1" --> "*" InventoryBatch : has >
+InventoryBatch "1" --> "*" InventoryMovement : logs >
+StockLocation "1" --> "*" InventoryBatch : stores >
+Product "1" --> "*" OrderItem : sold_in >
+
+' Notas / restrições
+note top of StockLocation
+  UNIQUE(zone, aisle, shelf, level, position)
+  location_code = zone + "-" + aisle + "-" + shelf + "-" + level + "-" + position
+end note
+
+note right of InventoryBatch
+  Cada InventoryBatch representa um lote físico.
+  batch -> stock_location: local físico do lote.
+end note
+
+note right of Order
+  Fluxo: criação (reserva) -> confirmação (debitar estoque) -> envio/conclusão.
+  Cancelamento reverte movimentos.
+end note
+
+@enduml

@@ -1,0 +1,28 @@
+@startuml
+left to right direction
+
+actor Customer
+actor WarehouseManager as WM
+actor Admin
+
+package "Sistema de Estoque e Pedidos" {
+  Customer -- (Registrar conta)
+  Customer -- (Login)
+  Customer -- (Criar pedido)
+  Customer -- (Visualizar status do pedido)
+
+  WM -- (Registrar entrada de estoque)
+  WM -- (Alocar lote para pedido)
+  WM -- (Confirmar expedição)
+  WM -- (Gerar relatórios de movimentação)
+
+  Admin -- (Gerenciar produtos)
+  Admin -- (Gerenciar clientes)
+  Admin -- (Configurar políticas ABC/PEPS)
+}
+
+note right of (Criar pedido)
+  Fluxo: reserva de estoque -> confirmação -> débito
+end note
+
+@enduml
