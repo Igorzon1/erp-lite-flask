@@ -1,0 +1,11 @@
+venv
+# Arquivos de bytecode e caches
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Arquivos de logs
+*.log
+.coverage
+.mypy_cache/
+.pytest_cache/
