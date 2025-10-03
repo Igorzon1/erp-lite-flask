@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <title>{% block title %}Meu Projeto Flask{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <h1><a href="{{ url_for('products.index') }}">Gerenciamento de Produtos</a></h1>
+    </header>
+    <main>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <ul class="flashes">
+            {% for category, message in messages %}
+              <li class="{{ category }}">{{ message }}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        <p>&copy; 2024 Programador Aventureiro</p>
+    </footer>
+</body>
+</html>
