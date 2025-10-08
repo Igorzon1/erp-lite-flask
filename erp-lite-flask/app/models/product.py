@@ -1,7 +1,5 @@
 # app/models/product.py
-
-# NOVO: Importa o objeto 'db' do arquivo db.py
-from db import db 
+from app.extensions import db
 from sqlalchemy import Column, Integer, String, Float
 
 class Product(db.Model):

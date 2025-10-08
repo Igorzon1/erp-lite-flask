@@ -2,8 +2,8 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 from flask_login import login_user, current_user, logout_user, login_required
 # Importações ajustadas (sem 'app.' prefix)
-from models.user import User
-from db import db
+from ..models.user import User
+from ..extensions import db
 
 # Cria o Blueprint para as rotas de autenticação
 auth = Blueprint('auth', __name__)

@@ -1,8 +1,8 @@
 # app/models/user.py
-from db import db
 from flask_login import UserMixin
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+from ..extensions import db, login_manager
 
 class User(db.Model, UserMixin):
     __tablename__ = 'users'
@@ -22,3 +22,8 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return f'<User {self.username}>'
+
+# user_loader — colocado aqui porque importamos login_manager das extensions (não do app)
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))

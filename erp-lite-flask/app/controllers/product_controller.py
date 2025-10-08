@@ -1,7 +1,7 @@
 # controllers/product_controller.py
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from models.product import Product
+from ..models.product import Product
 
 # Cria um Blueprint para organizar as rotas
 products_bp = Blueprint('products', __name__)
