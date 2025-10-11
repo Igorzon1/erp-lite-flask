@@ -17,6 +17,9 @@
     {% endwith %}
 
     <form method="POST" action="{{ url_for('auth.login') }}">
+        <!-- Campo escondido para guardar o "next" -->
+        <input type="hidden" name="next" value="{{ request.args.get('next') or '' }}">
+
         <label for="email">E-mail:</label><br>
         <input type="text" name="email" id="email" required><br><br>
 
