@@ -1,79 +1,73 @@
-# Sistema de Gerenciamento de Estoque, Pedidos e Clientes
+# 🧠 ERP Lite Flask — Sistema de Gerenciamento de Estoque, Pedidos e Clientes
 
-> **Resumo:** Projeto web completo para gestão de clientes, produtos/estoque e pedidos, criado como projeto de portfólio colaborativo entre um estudante de Ciência da Computação (desenvolvimento backend) e um Engenheiro de Produção (regras e operações de estoque). O objetivo é demonstrar boas práticas de engenharia de software, arquitetura organizada, testes automatizados e aplicações reais de métodos de engenharia de produção (ABC, PEPS, endereçamento de prateleiras).
-
----
-
-## Links rápidos
-- Demo (local): `http://localhost:8000`
-- Docs da API (Swagger): `/apidocs`
-- Status: Em desenvolvimento
+## 📋 Resumo
+Sistema web completo de gerenciamento de **clientes**, **produtos/estoque** e **pedidos**, desenvolvido com **Flask (Python)** no padrão **MVC**.  
+O projeto foi criado como portfólio colaborativo entre um estudante de **Ciência da Computação** (backend) e um **Engenheiro de Produção** (regras operacionais e logísticas), com foco em **boas práticas**, **arquitetura organizada** e **aplicação de conceitos reais de gestão de estoque**.
 
 ---
 
-## Tecnologias
+## 🚀 Tecnologias
+
 - **Linguagem:** Python 3.12+
-- **Framework Backend:** Flask
-- **Banco de Dados:** PostgreSQL (produção) / SQLite (desenvolvimento)
+- **Framework:** Flask  
+- **Banco de Dados:** SQLite (dev) / PostgreSQL (produção)
 - **ORM / Migrações:** SQLAlchemy + Alembic
-- **Autenticação:** JWT + Flask-Login
-- **Frontend:** Bootstrap 5 + Vanilla JS / jQuery
-- **Testes:** PyTest
+- **Autenticação:** Flask-Login + JWT + Bcrypt
+- **Frontend:** Bootstrap 5 + HTML + jQuery
+- **Testes:** Pytest
 - **Documentação da API:** Swagger (Flasgger)
-- **Containerização / Orquestração:** Docker + Docker Compose
+- **Containerização:** Docker + Docker Compose
 
 ---
 
-## Objetivos do projeto (visão do portfólio)
-Este repositório foi criado para que recrutadores vejam:
-- Arquitetura limpa (separação de camadas: models, repositories, services, routes).
-- Testes automatizados cobrindo regras de negócio e endpoints críticos.
-- Integração de requisitos de Engenharia de Produção (políticas ABC, PEPS, endereçamento de estoque).
-- Implantação via Docker (facilidade de replicação do ambiente).
-- Documentação clara (README, Swagger, exemplos de uso).
+## 🎯 Objetivos do Projeto
+
+O foco deste sistema é demonstrar:
+
+- Estrutura organizada seguindo o padrão **MVC (Model-View-Controller)**  
+- Autenticação moderna com **JWT** e **Flask-Login**  
+- CRUDs modulares e desacoplados usando **Blueprints**  
+- Integração de conceitos reais de estoque (**ABC**, **PEPS**, **endereçamento físico**)  
+- Código limpo, legível e fácil de manter  
+- Práticas de engenharia de produção aplicadas na modelagem de estoque e pedidos  
 
 ---
 
-## Principais funcionalidades
-### Módulos
-- **Clientes:** CRUD completo, validação de CPF/CNPJ (único) e regras de negócio (ex.: exclusão apenas sem pedidos ativos).
-- **Produtos / Estoque:** cadastro de produtos com lote, validade, dimensões, peso, endereço físico (corredor → prateleira → nível), entradas e saídas.
-- **Pedidos:** criação, alteração de status (Em aberto → Pago → Enviado → Concluído | Cancelado), cálculo automático do valor total, impacto no estoque (reserva e débito), reversão no cancelamento.
-- **Relatórios:** vendas, movimentações, ocupação de prateleiras, alertas de validade.
-- **Módulo de Qualidade:** ferramentas para Pareto, Ishikawa, checklists e PDCA simplificado.
-
----
-
-## Regras de domínio (resumo técnico)
-- CPF/CNPJ único por cliente; e-mail opcional mas validado quando presente.
-- Quantidades não podem ser negativas; entradas aumentam estoque, confirmações diminuem.
-- PEPS obrigatório para perecíveis; produtos com validade próxima possuem prioridade de saída.
-- Classificação ABC por giro para alocação de prateleiras.
-- Itens pesados/volumosos respeitam restrições de alocação física.
-- Pedido só pode ser confirmado com ao menos um produto válido.
-- Cancelamento reverte movimentações de estoque.
+## ⚙️ Estrutura do Projeto
 
 ---
 
 ## Estrutura do repositório
 ```
-project/
-│── app/
-│   ├── models/        # Modelos SQLAlchemy (Client, Product, StockLocation, InventoryMovement, Order, OrderItem, etc.)
-│   ├── routes/        # Blueprints por módulo
-│   ├── services/      # Regras de negócio (ex.: checkout, alocação, movimentos)
-│   ├── repositories/  # Acesso ao DB, queries complexas
-│   ├── templates/     # Páginas HTML (Bootstrap)
-│   ├── static/        # CSS, JS, assets
-│   └── utils/         # Helpers: validação de CPF/CNPJ, JWT, utils de data
+erp-lite-flask/
 │
-│── tests/             # Testes unitários e integração (PyTest)
-│── migrations/        # Alembic
-│── config.py          # Configurações por ambiente
-│── requirements.txt
-│── docker-compose.yml
-│── Dockerfile
-│── run.py
+├── app/
+│ ├── controllers/ # Controladores (lógica de rotas e fluxo da aplicação)
+│ │ ├── auth_controller.py
+│ │ └── product_controller.py
+│ │
+│ ├── models/ # Modelos (tabelas e regras de negócio)
+│ │ ├── user.py
+│ │ └── product.py
+│ │
+│ ├── templates/ # Views (HTML com Bootstrap)
+│ │ ├── auth/
+│ │ ├── pedidos/
+│ │ ├── products/
+│ │ ├── layout.html
+│ │ └── 404.html
+│ │
+│ ├── config.py # Configurações gerais do projeto
+│ ├── extensions.py # Inicialização das extensões (DB, LoginManager, JWT, Bcrypt, Migrate)
+│ └── init.py # Fábrica da aplicação Flask (create_app)
+│
+├── migrations/ # Migrações do Alembic
+│
+├── run.py # Ponto de entrada principal
+├── requirements.txt # Dependências do projeto
+├── .env # Variáveis de ambiente
+├── .gitignore
+└── README.md
 ```
 
 ---
@@ -87,7 +81,7 @@ project/
 - **Order**: id, client_id, status, total, created_at
 - **OrderItem**: id, order_id, product_id, quantidade, unit_price, batch_allocated
 
-(Adicionar diagrama ER no diretório `docs/` se desejar)
+## Diagrama de Classes no docs
 
 ---
 
@@ -186,14 +180,9 @@ JWT_SECRET=trocar_para_uma_chave_jwt
 ---
 
 ## Licença
-Escolha uma licença (ex.: MIT) e adicione o arquivo `LICENSE`.
+Projeto sob licença MIT.
+Sinta-se à vontade para usar como base no seu portfólio. 🚀
 
 ---
-
-> Se quiser, eu posso também gerar automaticamente:
-> - um `docker-compose.yml` de exemplo;
-> - modelos de migrations e seeds;
-> - exemplos de testes PyTest cobrindo PEPS/ABC e o fluxo de pedido.
-
 
 
